@@ -1,0 +1,25 @@
+# remove plymouth
+sudo apt purge plymouth
+sudo apt autoclean
+
+# silent kernel print
+/etc/sysctl.conf
+kernel.printk = 0 0 0 0
+sysctl --system
+
+# silent grub
+/etc/default/grub
+GRUB_DEFAULT=0
+GRUB_TIMEOUT=0
+GRUB_FORCE_HIDDEN_MENU="true"
+GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
+GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=0 console=tty2"
+GRUB_CMDLINE_LINUX=""
+
+# remove grub wp
+sudo mv /usr/share/images/desktop-base/desktop-grub.png /usr/share/images/desktop-base/desktop-grub.png_bak
+sudo update-initramfs -u
+sudo update-grub
+
+
+
