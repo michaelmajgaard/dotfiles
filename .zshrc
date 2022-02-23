@@ -105,8 +105,17 @@ function hsearch {
         grep -i $1 ~/.zsh_history
 }
 
+function dl {
+    if [[ -z "$1" ]]; then
+        ARG="."
+    else
+        ARG=$@
+    fi
+    cd $ARG && clear && gls -lh --group-directories-first --color
+}
+
 alias uuidgen='echo -n $(/usr/bin/uuidgen)'
-alias ls='gls -lhX --group-directories-first --color'
+alias ls='gls -lh --group-directories-first --color'
 alias ll='ls'
 alias rr='ranger --cmd=sort\ extension --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
 alias lazygit='git add -A && git commit -m "$(git status --short)"'
