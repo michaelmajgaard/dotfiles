@@ -14,5 +14,5 @@ let &t_EI = "\e[2 q"
 packadd! vimspector
 let g:vimspector_enable_mappings = 'VISUAL_STUDIO'
 nmap <Leader><F9> <Plug>VimspectorRunToCursor
-autocmd VimEnter * silent exec "startinsert"
+autocmd VimEnter * silent exec 'call feedkeys("I\<esc>")'
 
