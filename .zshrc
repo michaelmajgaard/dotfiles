@@ -114,6 +114,15 @@ function dl {
     cd $ARG && clear && gls -lh --group-directories-first --color
 }
 
+function vi {
+    if [[ -f "$1" ]]; then
+        /opt/homebrew/bin/vim $1
+    elif [[ -d "$1" ]]; then
+        /opt/homebrew/bin/vim -c "NERDTree $1"
+    fi
+
+}
+
 alias uuidgen='echo -n $(/usr/bin/uuidgen)'
 alias ls='gls -lh --group-directories-first --color'
 alias ll='ls'
@@ -122,7 +131,9 @@ alias lazygit='git add -A && git commit -m "$(git status --short)"'
 alias lazycommit='git commit -m "$(git status --short)"'
 alias gitss='git status --short'
 alias cl="clear && printf '\e[3J'"
-alias vi="/opt/homebrew/bin/vim"
+#alias vi="/opt/homebrew/bin/vim"
+alias nerd="vi -c \"NERDTree\""
+alias sed="gsed"
 
 export EDITOR=vi
 export VISUAL=vi
