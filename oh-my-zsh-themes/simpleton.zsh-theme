@@ -17,7 +17,6 @@ function git_status_text {
 	fi
 }
 
-PROMPT=$'
-%{$fg[blue]%}%~$(git_status_text)
+PROMPT=$'%{$fg[blue]%}%~$(git_status_text)
 %{$fg[green]%}$%{$reset_color%} '
 

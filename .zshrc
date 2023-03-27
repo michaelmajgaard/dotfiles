@@ -102,28 +102,10 @@ source $ZSH/oh-my-zsh.sh
 
 # general
 function hsearch {
-        grep -i $1 ~/.zsh_history
+    grep -i $1 ~/.zsh_history
 }
 
-function dl {
-    if [[ -z "$1" ]]; then
-        ARG="."
-    else
-        ARG=$@
-    fi
-    cd $ARG && clear && gls -lh --group-directories-first --color
-}
-
-function vi {
-    if [[ -f "$1" ]]; then
-        /opt/homebrew/bin/vim $1
-    elif [[ -d "$1" ]]; then
-        /opt/homebrew/bin/vim -c "NERDTree $1"
-    fi
-
-}
-
-alias uuidgen='echo -n $(/usr/bin/uuidgen)'
+alias uuidgen="/usr/bin/uuidgen | tr -d '\n' | pbcopy"
 alias ls='gls -lh --group-directories-first --color'
 alias ll='ls'
 alias rr='ranger --cmd=sort\ extension --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
@@ -131,13 +113,24 @@ alias lazygit='git add -A && git commit -m "$(git status --short)"'
 alias lazycommit='git commit -m "$(git status --short)"'
 alias gitss='git status --short'
 alias cl="clear && printf '\e[3J'"
-#alias vi="/opt/homebrew/bin/vim"
-alias nerd="vi -c \"NERDTree\""
+alias vi="nvim"
+alias vim="nvim"
 alias sed="gsed"
+
+function dl {
+    if [[ -z "$1" ]]; then
+        cd "./" && ll
+    else
+        cd "$@" && ll
+    fi
+}
+
+alias gh="dl ~"
 
 export EDITOR=vi
 export VISUAL=vi
 export PATH=$HOME/bin:$PATH
+export PATH=$HOME/.dotnet/tools:$PATH
 
 # vim mode
 bindkey -v
@@ -171,50 +164,50 @@ zle-line-init() {
 }
 zle -N zle-line-init
 echo -ne '\e[5 q' # Use beam shape cursor on startup.
-preexec() { echo -ne '\e[5 q' ;} # Use beam shape cursor for each new prompt.
+preexec() { clear && echo -ne '\e[5 q' ;} # clear prompt and use beam shape cursor for each new prompt.
 
 # wsl specific
 if [[ $(grep -i Microsoft /proc/version 2>/dev/null) ]]; then
+    function vi {
+        cl && vim $@
+    }
 
-        function vi {
-                cl && vim $@
-        }
+    function open {
+        args=$(echo $@ | sed "s/\/mnt\/c/c:/g")
+        powershell.exe -c "& $args"
+    }
 
-        function open {
-                args=$(echo $@ | sed "s/\/mnt\/c/c:/g")
-                powershell.exe -c "& $args"
-        }
+    function code {
+        open code.cmd $1
+    }
 
-        function code {
-                open code.cmd $1
-        }
+    function ie {
+        #args=$(echo $@ | sed "s/\/mnt\/c/c:/g")
+        #args=$(echo $args | sed "s/\//\\/g")
+        #echo $args
+        open explorer.exe .
+    }
 
-        function ie {
-                #args=$(echo $@ | sed "s/\/mnt\/c/c:/g")
-                #args=$(echo $args | sed "s/\//\\/g")
-                #echo $args
-                open explorer.exe .
-        }
+    function lock {
+        powershell.exe -c "Rundll32.exe user32.dll,LockWorkStation"
+    }
 
-        function lock {
-                powershell.exe -c "Rundll32.exe user32.dll,LockWorkStation"
-        }
+    alias dotnet='dotnet.exe'
+    alias gitk='gitk.exe'
+    alias git='git.exe'
+    alias nuget='nuget.exe'
 
-        alias dotnet='dotnet.exe'
-        alias gitk='gitk.exe'
-        alias git='git.exe'
-        alias nuget='nuget.exe'
+    LS_COLORS="ow=01;36;40" && export LS_COLORS
+    LS_COLORS="ow=01;36;40" && export LS_COLORS
 
-        LS_COLORS="ow=01;36;40" && export LS_COLORS
-        LS_COLORS="ow=01;36;40" && export LS_COLORS
+    # hack to make colors in autocomplete menu correct in wsl..
+    plts=$(<~/lts 2>/dev/null)
+    clts=$(date +%s)
+    if [[ $((clts-plts)) > 1 ]]; then
+        echo -n ${clts} > ~/lts
+        source ~/.zshrc
+    fi
 
-        # hack to make colors in autocomplete menu correct in wsl..
-        plts=$(<~/lts 2>/dev/null)
-        clts=$(date +%s)
-        if [[ $((clts-plts)) > 1 ]]; then
-                echo -n ${clts} > ~/lts
-                source ~/.zshrc
-        fi
-
-        cd /mnt/c/udv/ 2>/dev/null
+    cd /mnt/c/udv/ 2>/dev/null
 fi
+
