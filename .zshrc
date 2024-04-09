@@ -105,10 +105,27 @@ function hsearch {
     grep -i $1 ~/.zsh_history
 }
 
-alias uuidgen="/usr/bin/uuidgen | tr -d '\n' | pbcopy"
+function uuidgen {
+    ~/bin/uuidgen $@ | tr -d '\n' | pbcopy
+}
+
+#alias uuidgen="~/bin/uuidgen | tr -d '\n' | pbcopy"
 alias ls='gls -lh --group-directories-first --color'
-alias ll='ls'
-alias rr='ranger --cmd=sort\ extension --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
+alias ll='ls -a'
+
+function dl {
+    if [[ -z "$1" ]]; then
+        cd "./" && ls 
+    else
+        cd "$@" && ls
+    fi
+}
+
+function cd {
+    builtin cd $@ && ll
+}
+
+alias rr='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
 alias lazygit='git add -A && git commit -m "$(git status --short)"'
 alias lazycommit='git commit -m "$(git status --short)"'
 alias gitss='git status --short'
@@ -116,16 +133,10 @@ alias cl="clear && printf '\e[3J'"
 alias vi="nvim"
 alias vim="nvim"
 alias sed="gsed"
+alias vout="sed $'s/\033[[][^A-Za-z]*[A-Za-z]//g' | vi -"
+alias less="vi -c 'set nonumber' -"
 
-function dl {
-    if [[ -z "$1" ]]; then
-        cd "./" && ll
-    else
-        cd "$@" && ll
-    fi
-}
-
-alias gh="dl ~"
+alias notes="vi ~/notes.txt"
 
 export EDITOR=vi
 export VISUAL=vi
@@ -136,8 +147,12 @@ export PATH=$HOME/.dotnet/tools:$PATH
 bindkey -v
 export KEYTIMEOUT=1
 
+bindkey '^k' history-beginning-search-backward
+bindkey '^j' history-beginning-search-forward
+
 zstyle ':completion:*' menu select
 zmodload zsh/complist
+
 
 # use the vi navigation keys in menu completion
 bindkey -M menuselect 'h' vi-backward-char
@@ -211,3 +226,11 @@ if [[ $(grep -i Microsoft /proc/version 2>/dev/null) ]]; then
     cd /mnt/c/udv/ 2>/dev/null
 fi
 
+
+# pnpm
+export PNPM_HOME="/Users/michael/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
