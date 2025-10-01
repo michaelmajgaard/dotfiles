@@ -109,9 +109,14 @@ function uuidgen {
     ~/bin/uuidgen $@ | tr -d '\n' | pbcopy
 }
 
+function glngen {
+    ~/bin/glngen $@ | tr -d '\n' | pbcopy
+}
+
 #alias uuidgen="~/bin/uuidgen | tr -d '\n' | pbcopy"
 alias ls='gls -lh --group-directories-first --color'
-alias ll='ls -a'
+alias ll='ls'
+alias lla='ls -a'
 
 function dl {
     if [[ -z "$1" ]]; then
@@ -126,17 +131,16 @@ function cd {
 }
 
 alias rr='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
-alias lazygit='git add -A && git commit -m "$(git status --short)"'
-alias lazycommit='git commit -m "$(git status --short)"'
-alias gitss='git status --short'
 alias cl="clear && printf '\e[3J'"
 alias vi="nvim"
-alias vim="nvim"
+alias vit="nvim -c 'terminal' -c 'startinsert'"
+#alias vim="nvim"
 alias sed="gsed"
 alias vout="sed $'s/\033[[][^A-Za-z]*[A-Za-z]//g' | vi -"
-alias less="vi -c 'set nonumber' -"
+#alias less="vi -c 'set nonumber' -MR -"
+alias vilog="vi -c'set autoread' -MR"
 
-alias notes="vi ~/notes.txt"
+alias notes="vi ~/notes/"
 
 export EDITOR=vi
 export VISUAL=vi
@@ -153,7 +157,6 @@ bindkey '^j' history-beginning-search-forward
 zstyle ':completion:*' menu select
 zmodload zsh/complist
 
-
 # use the vi navigation keys in menu completion
 bindkey -M menuselect 'h' vi-backward-char
 bindkey -M menuselect 'k' vi-up-line-or-history
@@ -163,12 +166,12 @@ bindkey -M menuselect 'j' vi-down-line-or-history
 # Change cursor shape for different vi modes.
 function zle-keymap-select {
   if [[ ${KEYMAP} == vicmd ]] ||
-     [[ $1 = 'block' ]]; then
+    [[ $1 = 'block' ]]; then
     echo -ne '\e[1 q'
   elif [[ ${KEYMAP} == main ]] ||
-       [[ ${KEYMAP} == viins ]] ||
-       [[ ${KEYMAP} = '' ]] ||
-       [[ $1 = 'beam' ]]; then
+      [[ ${KEYMAP} == viins ]] ||
+      [[ ${KEYMAP} = '' ]] ||
+      [[ $1 = 'beam' ]]; then
     echo -ne '\e[5 q'
   fi
 }
@@ -234,3 +237,10 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# bun completions
+[ -s "/Users/michael/.bun/_bun" ] && source "/Users/michael/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
