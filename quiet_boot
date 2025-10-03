@@ -7,6 +7,11 @@ sudo apt autoclean
 kernel.printk = 0 0 0 0
 sysctl --system
 
+# silent systemd boot loader
+/etc/kernel/kernel/cmdline
+>> quiet loglevel=0 rd.systemd.show_status=false rd.udev.log_level=0 console=tty2
+sudo mkinitcpio -P
+
 # silent grub
 /etc/default/grub
 GRUB_DEFAULT=0
