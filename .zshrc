@@ -118,11 +118,12 @@ alias ls='gls -lh --group-directories-first --color'
 alias ll='ls'
 alias lla='ls -a'
 
-function dl {
-    if [[ -z "$1" ]]; then
-        cd "./" && ls 
-    else
-        cd "$@" && ls
+function y() {
+    local tmp="$(mktemp)"
+    yazi --cwd-file="$tmp" "$@"
+    if [ -f "$tmp" ]; then
+        cd "$(cat "$tmp")" || return
+        rm -f "$tmp"
     fi
 }
 
@@ -130,20 +131,12 @@ function cd {
     builtin cd $@ && ll
 }
 
-alias rr='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
-alias cl="clear && printf '\e[3J'"
 alias vi="nvim"
-alias vit="nvim -c 'terminal' -c 'startinsert'"
-#alias vim="nvim"
 alias sed="gsed"
-alias vout="sed $'s/\033[[][^A-Za-z]*[A-Za-z]//g' | vi -"
-#alias less="vi -c 'set nonumber' -MR -"
-alias vilog="vi -c'set autoread' -MR"
+alias duh="du -sh . 2>/dev/null | tr -d 's/.\t //g'"
 
-alias notes="vi ~/notes/"
-
-export EDITOR=vi
-export VISUAL=vi
+export EDITOR=nvim
+export VISUAL=nvim
 export PATH=$HOME/bin:$PATH
 export PATH=$HOME/.dotnet/tools:$PATH
 
@@ -162,6 +155,11 @@ bindkey -M menuselect 'h' vi-backward-char
 bindkey -M menuselect 'k' vi-up-line-or-history
 bindkey -M menuselect 'l' vi-forward-char
 bindkey -M menuselect 'j' vi-down-line-or-history
+
+bindkey -M vicmd 'h' vi-backward-char
+bindkey -M vicmd 'k' history-beginning-search-backward
+bindkey -M vicmd 'l' vi-forward-char
+bindkey -M vicmd 'j' history-beginning-search-forward
 
 # Change cursor shape for different vi modes.
 function zle-keymap-select {
@@ -184,52 +182,6 @@ zle -N zle-line-init
 echo -ne '\e[5 q' # Use beam shape cursor on startup.
 preexec() { clear && echo -ne '\e[5 q' ;} # clear prompt and use beam shape cursor for each new prompt.
 
-# wsl specific
-if [[ $(grep -i Microsoft /proc/version 2>/dev/null) ]]; then
-    function vi {
-        cl && vim $@
-    }
-
-    function open {
-        args=$(echo $@ | sed "s/\/mnt\/c/c:/g")
-        powershell.exe -c "& $args"
-    }
-
-    function code {
-        open code.cmd $1
-    }
-
-    function ie {
-        #args=$(echo $@ | sed "s/\/mnt\/c/c:/g")
-        #args=$(echo $args | sed "s/\//\\/g")
-        #echo $args
-        open explorer.exe .
-    }
-
-    function lock {
-        powershell.exe -c "Rundll32.exe user32.dll,LockWorkStation"
-    }
-
-    alias dotnet='dotnet.exe'
-    alias gitk='gitk.exe'
-    alias git='git.exe'
-    alias nuget='nuget.exe'
-
-    LS_COLORS="ow=01;36;40" && export LS_COLORS
-    LS_COLORS="ow=01;36;40" && export LS_COLORS
-
-    # hack to make colors in autocomplete menu correct in wsl..
-    plts=$(<~/lts 2>/dev/null)
-    clts=$(date +%s)
-    if [[ $((clts-plts)) > 1 ]]; then
-        echo -n ${clts} > ~/lts
-        source ~/.zshrc
-    fi
-
-    cd /mnt/c/udv/ 2>/dev/null
-fi
-
-
 # pnpm
 export PNPM_HOME="/Users/michael/Library/pnpm"
 case ":$PATH:" in
@@ -244,3 +196,13 @@ esac
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+eval "$(fnm env --use-on-cd --shell zsh)"
+
+~/reinit-rectangle.sh
+
+# Auto-start tmux on interactive shells (always create a new session)
+if [[ -o interactive ]] && command -v tmux >/dev/null 2>&1; then
+  if [[ -z "$TMUX" ]] && [[ "$TERM" != "dumb" ]]; then
+    exec tmux new-session -s "shell-$(date +%Y%m%d-%H%M%S)"
+  fi
+fi
