@@ -4,6 +4,8 @@
 
 (defsrc
   caps
+  rctl
+  tab
   grv
   lsgt
   h j k l
@@ -15,10 +17,18 @@
 
 (defalias
   hyper (layer-while-held hyper)
+
+  rctl-layer
+  (multi
+    rctl
+    (layer-while-held rctl-layer)
+  )
 )
 
 (deflayer base
   @hyper
+  @rctl-layer
+  tab
   esc
   grv
   h j k l
@@ -30,6 +40,8 @@
 
 (deflayer hyper
   _
+  @rctl-layer
+  tab
   esc
   grv
   left down up right
@@ -37,4 +49,17 @@
   enter
   f1 f2 f3 f4 f5 f6 f7 f8 f9 f10
   f11 f12
+)
+
+(deflayer rctl-layer
+  _
+  _
+  A-tab
+  esc
+  grv
+  h j k l
+  w b
+  o
+  1 2 3 4 5 6 7 8 9 0
+  - =
 )
