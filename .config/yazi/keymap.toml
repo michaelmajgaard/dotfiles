@@ -1,0 +1,14 @@
+[mgr]
+prepend_keymap = [
+  { on = ";", run = "noop" },
+  { on = "q", run = "noop" },
+  { on = [ ";", "q", "q" ], run = "quit" },
+  { on = [ ";", "q", "x" ], run = "quit" },
+  { on = [ ";", "o", "o" ], run = "shell -- open %h" },
+  { on = [ ";", "o", "x" ], run = "shell -- open %h" },
+  { on = "<Enter>", run = "plugin smart-enter" },
+  { on = "<l>", run = "plugin smart-enter" },
+  { on = "v", run = "noop", desc = "Disable v" },
+  { on = "V", run = "visual_mode", desc = "Select with Shift+V" },
+]
+
