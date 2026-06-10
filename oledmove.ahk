@@ -1,30 +1,19 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
-global margins := [10, 20, 30, 40]
-global marginIndex := 1
-
-; Ctrl + Alt + Enter
 ^!Enter::ApplyMargin()
 
-; Win + Alt + M
-#!m:: {
-    global margins, marginIndex
+GetCurrentMargin() {
+    margins := [10, 20, 30, 40]
 
-    marginIndex += 1
-    if marginIndex > margins.Length
-        marginIndex := 1
+    days := DateDiff(A_Now, "20000101000000", "Days")
+    index := Mod(days, margins.Length) + 1
 
-    ApplyMargin()
-
-    ToolTip("Margin: " margins[marginIndex] "px")
-    SetTimer(() => ToolTip(), -1000)
+    return margins[index]
 }
 
 ApplyMargin() {
-    global margins, marginIndex
-
-    margin := margins[marginIndex]
+    margin := GetCurrentMargin()
 
     hwnd := WinExist("A")
     if !hwnd
