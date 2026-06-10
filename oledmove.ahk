@@ -4,7 +4,7 @@
 ^!Enter::ApplyMargin()
 
 GetCurrentMargin() {
-    margins := [10, 20, 30, 40]
+    margins := [32, 40, 48, 56, 64]
 
     days := DateDiff(A_Now, "20000101000000", "Days")
     index := Mod(days, margins.Length) + 1
@@ -32,3 +32,4 @@ ApplyMargin() {
         "ahk_id " hwnd
     )
 }
+
