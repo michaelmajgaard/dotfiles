@@ -1,4 +1,8 @@
-mv ~/.config/nvim ~/.config/nvim.backup
+#!/usr/bin/env bash
+
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+
+mv ~/.config/nvim ~/.config/nvim.backup.$TIMESTAMP
 
 rm -rf ~/.local/share/nvim
 rm -rf ~/.cache/nvim
