@@ -1,8 +1,7 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
-global margins := [32, 40, 48, 56, 64]
-global marginIndex := 1
+global margin := 32
 
 ; Ctrl + Alt + Enter
 ^!Enter::ApplyMargin()
@@ -11,27 +10,9 @@ global marginIndex := 1
 ^!c::CenterFocusedWindow()
 
 ; Ctrl + Alt + -
-^!-::ResizeFocusedWindow(-32)
-
-; Win + Alt + M
-#!m:: {
-    global margins, marginIndex
-
-    marginIndex += 1
-    if marginIndex > margins.Length
-        marginIndex := 1
-
-    ApplyMargin()
-
-    ToolTip("Margin: " margins[marginIndex] "px")
-    SetTimer(() => ToolTip(), -1000)
-}
+^!-::ResizeFocusedWindow(-margin * 2)
 
 ApplyMargin() {
-    global margins, marginIndex
-
-    margin := margins[marginIndex]
-
     hwnd := WinExist("A")
     if !hwnd
         return
@@ -77,8 +58,9 @@ ResizeFocusedWindow(delta) {
 
     WinGetPos(&x, &y, &w, &h, "ahk_id " hwnd)
 
-    newW := Max(100, w + delta)
+    newW := Max(100, w + delta * 4)
     newH := Max(100, h + delta)
 
     WinMove(x, y, newW, newH, "ahk_id " hwnd)
 }
+
