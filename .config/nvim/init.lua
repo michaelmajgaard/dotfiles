@@ -119,12 +119,18 @@ require("roslyn").setup({
 
 		root_dir = function(bufnr, on_dir)
 			local fname = vim.api.nvim_buf_get_name(bufnr)
-			local root = vim.fs.root(fname, { "*.sln", "*.csproj", ".git" })
+			local root = vim.fs.root(fname, { "*.sln", "*.csproj" })
 
 			if root then
 				on_dir(root)
 			end
 		end,
+    settings = {
+      ["csharp|background_analysis"] = {
+        dotnet_compiler_diagnostics_scope = "fullSolution",
+        dotnet_analyzer_diagnostics_scope = "fullSolution",
+      },
+    },
 	},
 })
 
