@@ -2,6 +2,7 @@ vim.g.mapleader = ';'
 vim.g.maplocalleader = ';'
 
 vim.o.number = true
+vim.o.wrap = false
 
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
 vim.o.ignorecase = true
