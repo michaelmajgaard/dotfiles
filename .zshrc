@@ -105,16 +105,15 @@ function hsearch {
     grep -i $1 ~/.zsh_history
 }
 
-function uuidgen {
-    ~/bin/uuidgen $@ | tr -d '\n' | pbcopy
-}
+case "$(uname -s)" in
+  Darwin)
+    alias ls='gls -lh --group-directories-first --color'
+    ;;
+  Linux)
+    alias ls='ls -lh --group-directories-first --color'
+    ;;
+esac
 
-function glngen {
-    ~/bin/glngen $@ | tr -d '\n' | pbcopy
-}
-
-#alias uuidgen="~/bin/uuidgen | tr -d '\n' | pbcopy"
-alias ls='gls -lh --group-directories-first --color'
 alias ll='ls'
 alias lla='ls -a'
 
@@ -138,7 +137,6 @@ alias duh="du -sh . 2>/dev/null | tr -d 's/.\t //g'"
 export EDITOR=nvim
 export VISUAL=nvim
 export PATH=$HOME/bin:$PATH
-export PATH=$HOME/.dotnet/tools:$PATH
 
 # vim mode
 bindkey -v
@@ -182,23 +180,9 @@ zle -N zle-line-init
 echo -ne '\e[5 q' # Use beam shape cursor on startup.
 preexec() { clear && echo -ne '\e[5 q' ;} # clear prompt and use beam shape cursor for each new prompt.
 
-# pnpm
-export PNPM_HOME="/Users/michael/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-
-# bun completions
-[ -s "/Users/michael/.bun/_bun" ] && source "/Users/michael/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-eval "$(fnm env --use-on-cd --shell zsh)"
-
-~/reinit-rectangle.sh
+if [[ -f "$HOME/sync-setup.sh" ]]; then
+  "$HOME/sync-setup.sh"
+fi
 
 # Auto-start tmux on interactive shells (always create a new session)
 if [[ -o interactive ]] && command -v tmux >/dev/null 2>&1; then
