@@ -144,7 +144,8 @@ alias duh="du -sh . 2>/dev/null | tr -d 's/.\t //g'"
 export EDITOR=nvim
 export VISUAL=nvim
 export PATH=$HOME/bin:$PATH
-export PATH="$PATH:/Users/michael/.dotnet/tools"
+export PATH=$HOME/.dotnet/tools:$PATH
+export PATH=$HOME/.cargo/bin:$PATH
 
 # vim mode
 bindkey -v
