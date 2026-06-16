@@ -107,6 +107,7 @@ function hsearch {
 
 case "$(uname -s)" in
   Darwin)
+    alias sed="gsed"
     alias ls='gls -lh --group-directories-first --color'
     ;;
   Linux)
@@ -131,7 +132,6 @@ function cd {
 }
 
 alias vi="nvim"
-alias sed="gsed"
 alias duh="du -sh . 2>/dev/null | tr -d 's/.\t //g'"
 
 export EDITOR=nvim
