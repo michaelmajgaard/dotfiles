@@ -138,6 +138,18 @@ function cd {
     builtin cd $@ && ll
 }
 
+function git {
+    case "$PWD" in
+        /mnt/c/*)
+            # wsl
+            git.exe "$@"
+            ;;
+        *)
+            command git "$@"
+            ;;
+    esac
+}
+
 alias vi="nvim"
 alias duh="du -sh . 2>/dev/null | tr -d 's/.\t //g'"
 
