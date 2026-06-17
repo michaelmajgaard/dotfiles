@@ -154,7 +154,14 @@ export KEYTIMEOUT=1
 bindkey '^k' history-beginning-search-backward
 bindkey '^j' history-beginning-search-forward
 
+# override colors for sticky + other writeable directories for visibility
+export LS_COLORS='ow=01;34:tw=01;34'
+
 zstyle ':completion:*' menu select
+
+# apply above colors to autocomplete
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+
 zmodload zsh/complist
 
 # use the vi navigation keys in menu completion
