@@ -113,11 +113,11 @@ function hsearch {
 }
 
 case "$(uname -s)" in
-  Darwin)
+  (Darwin)
     alias sed="gsed"
     alias ls='gls -lh --group-directories-first --color'
     ;;
-  Linux)
+  (Linux)
     alias ls='ls -lh --group-directories-first --color'
     ;;
 esac
@@ -140,14 +140,25 @@ function cd {
 
 function git {
     case "$PWD" in
-        /mnt/c/*)
-            # wsl
-            git.exe "$@"
-            ;;
-        *)
-            command git "$@"
-            ;;
+        (/mnt/c/*)
+          git.exe "$@"
+          ;;
+        (*)
+          command git "$@"
+          ;;
     esac
+}
+
+function rider {
+  case "$PWD" in
+    (/mnt/c/*)
+      #echo $(realpath "$1") | sed -E 's|^/mnt/([a-z])|\1:|; s|/|\\|g'
+      nohup /mnt/c/Program\ Files/JetBrains/JetBrains\ Rider\ */bin/rider64.exe "$(realpath "$1" | sed -E 's|^/mnt/([a-z])|\1:|; s|/|\\|g')"  >/dev/null 2>&1 </dev/null & disown && clear
+      ;;
+    (*)
+      command rider "$@"
+      ;;
+  esac
 }
 
 alias vi="nvim"
